@@ -83,16 +83,16 @@ Monthly Installments:
 
 📍 Store Information
 Address: 609 Roger St, Lusikisiki, Eastern Cape, South Africa, 4828
-Phone: +27 82 888 2353
+Phone: +27 63 085 7493
 ✅ Order Submission:
 Selected iPhone model & color details will be sent to:
-📩 +27 68 830 8314
+📩 +27 63 085 7493
 ✅ Banking Details & Proof of Payment Submission:
 Account Holder: Jayden Allen
 Bank Name: TymeBank (Business)
 Branch Code: 678910
 Account Number: 51059661139
-Customers must send proof of payment to WhatsApp: 📩 +27 68 830 8314
+Customers must send proof of payment to WhatsApp: 📩 +27 63 085 7493
 Orders will only be confirmed after proof of payment is received.
 📸 View iPhone Images
 Looking for pictures?
@@ -100,7 +100,7 @@ Looking for pictures?
 
 💬 Need Help?
 If you have any issues viewing the pictures, you can request them via WhatsApp at:
-📞 078 870 9557
+📞 +27 63 085 7493
 
 🎨 Looking for a specific color?
 Let me know, and I can provide more details based on your preference!
@@ -119,7 +119,7 @@ Let me know, and I can provide more details based on your preference!
 
             **💬 Need Help?**  
             If you have any issues viewing the pictures, you can request them via WhatsApp at:  
-            **📞 078 870 9557**  
+            **📞 +27 63 085 7493**  
 
             **🎨 Looking for a specific color?**  
             Let me know, and I can provide more details based on your preference!
