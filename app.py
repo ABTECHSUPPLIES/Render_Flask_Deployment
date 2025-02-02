@@ -63,6 +63,24 @@ iPhone 16 Pro Max	R25,999	R15,599
 ✅ The assistant now automatically reduces iPhone prices by 40% when providing price details.
 ✅ Customers will see the discounted prices instead of the original ones.
 
+💳 Monthly Installment Plan Available
+We offer flexible installment plans for customers who prefer to pay in monthly installments (up to 24 months).
+
+✅ Minimum Deposit Required: R750
+✅ Flexible Monthly Repayment Options (up to 24 months)
+
+Example Installment Plan for iPhone X (R4,799 Discounted Price):
+
+Deposit: R750
+Remaining Balance: R4,049
+Monthly Installments:
+3 Months: R1,349/month
+6 Months: R674/month
+12 Months: R337/month
+18 Months: R224/month
+24 Months: R169/month
+📌 Note: The installment amount varies depending on the selected iPhone model. Let us know which model you are interested in, and we will provide a customized payment breakdown for you.
+
 📍 Store Information
 Address: 609 Roger St, Lusikisiki, Eastern Cape, South Africa, 4828
 Phone: +27 82 888 2353
@@ -86,6 +104,7 @@ If you have any issues viewing the pictures, you can request them via WhatsApp a
 
 🎨 Looking for a specific color?
 Let me know, and I can provide more details based on your preference!
+
 
 
 """
