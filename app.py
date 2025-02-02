@@ -79,11 +79,15 @@ The assistant now automatically reduces iPhone prices by 40% when providing pric
             Let me know, and I can provide more details based on your preference!
             """
         else:
-            gpt_response = openai.ChatCompletion.create(
+            client = openai.OpenAI(api_key=openai_api_key)  # Use OpenAI's new Client
+            gpt_response = client.chat.completions.create(
                 model="gpt-4o",
-                messages=[{"role": "system", "content": system_prompt}, {"role": "user", "content": user_message}]
+                messages=[
+                    {"role": "system", "content": system_prompt},
+                    {"role": "user", "content": user_message}
+                ]
             )
-            response = gpt_response["choices"][0]["message"]["content"]
+            response = gpt_response.choices[0].message.content
 
         # Convert Markdown to formatted HTML
         formatted_response = markdown.markdown(response)
@@ -95,4 +99,4 @@ The assistant now automatically reduces iPhone prices by 40% when providing pric
     return jsonify({"response": formatted_response})
 
 if __name__ == '__main__':
-    app.run()
+    app.run(debug=True)
