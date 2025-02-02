@@ -145,4 +145,5 @@ Let me know, and I can provide more details based on your preference!
     return jsonify({"response": formatted_response})
 
 if __name__ == '__main__':
-    app.run()
+    port = int(os.getenv("PORT", 5000))  # Default to 5000 for local dev
+    app.run(debug=True, host="0.0.0.0", port=port)
