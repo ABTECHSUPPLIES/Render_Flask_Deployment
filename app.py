@@ -145,4 +145,4 @@ Let me know, and I can provide more details based on your preference!
     return jsonify({"response": formatted_response})
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run()
