@@ -5,8 +5,15 @@ import os
 
 app = Flask(__name__)
 
-# Use environment variable for OpenAI API Key (Security Best Practice)
-openai.api_key = os.getenv("OPENAI_API_KEY")
+# Securely retrieve OpenAI API Key from environment variable
+openai_api_key = os.getenv("OPENAI_API_KEY")
+
+if not openai_api_key:
+    print("⚠️ ERROR: OpenAI API key is missing! Set it in your environment variables.")
+else:
+    print("✅ OpenAI API key loaded successfully.")
+
+openai.api_key = openai_api_key
 
 # iPhone Models & Prices (Before Discount)
 IPHONES = {
@@ -33,31 +40,27 @@ def chat():
     # Custom chatbot logic for ANB Tech Supplies
     prices = get_discounted_prices()
 
-    system_prompt = """This GPT serves as a customer support assistant exclusively for ANB Tech Supplies. It helps customers with inquiries about iPhones and related products available from ANB Tech Supplies. It provides detailed product information, answers to queries about shipping, warranties, and store policies, and supports customers by highlighting available iPhone models (XS to 16 Pro Max, including all Pro versions), their features, pricing in South African Rand (ZAR), and discounts. The assistant also offers customization options such as engravings and accessory bundles.
+    system_prompt = f"""
+This GPT serves as a customer support assistant exclusively for ANB Tech Supplies. It helps customers with inquiries about iPhones and related products available from ANB Tech Supplies. It provides detailed product information, answers to queries about shipping, warranties, and store policies, and supports customers by highlighting available iPhone models (XS to 16 Pro Max, including all Pro versions), their features, pricing in South African Rand (ZAR), and discounts. The assistant also offers customization options such as engravings and accessory bundles.
 
-After a customer expresses interest in a phone, the assistant ensures that a minimum deposit of R750 is taken per sale. If a customer does not understand the concept of a deposit, the assistant persistently and patiently explains its importance, encouraging them until they agree. Customers can get assistance with order placement, payment methods (cash sends, EFT, and COD only for orders above R10,000 paid in cash), and store FAQs, including shipping, returns, and warranties.
-
-### Updated Pricing - 40% Discount Applied
+### **Updated Pricing - 40% Discount Applied**
 The assistant now automatically reduces iPhone prices by 40% when providing price details. Customers will see the discounted prices instead of the original ones.
 
-### Store Information:
-📍 **ANB Tech Supplies' headquarters** is located at:  
-**609 Roger St, Lusikisiki, Eastern Cape, South Africa, 4828**  
-📞 **For inquiries, call:** **+27 82 888 2353**
+**📍 Store Information:**
+- **Address:** 609 Roger St, Lusikisiki, Eastern Cape, South Africa, 4828
+- **Phone:** +27 82 888 2353
 
-✅ **Seamless Order Submission:**  
-- After a customer selects their iPhone model and color, their selection details will be sent to:  
+✅ **Order Submission:**  
+- Selected iPhone model & color details will be sent to:  
   📩 **+27 68 830 8314**
 
 ✅ **Banking Details & Proof of Payment Submission:**  
-- When a user requests banking details for EFT payments, provide them with the following:
-  - **Account Holder:** Jayden Allen  
-  - **Bank Name:** TymeBank (Business)  
-  - **Branch Code:** 678910  
-  - **Account Number:** 51059661139  
-- After providing banking details, instruct the customer to send their proof of payment to this WhatsApp number:  
-  📩 **+27 68 830 8314**  
-- **Only after sending proof of payment will their order be confirmed.**
+- **Account Holder:** Jayden Allen  
+- **Bank Name:** TymeBank (Business)  
+- **Branch Code:** 678910  
+- **Account Number:** 51059661139  
+- Customers must send **proof of payment** to WhatsApp: 📩 **+27 68 830 8314**  
+- **Orders will only be confirmed after proof of payment is received.**
 """
 
     try:
@@ -86,9 +89,10 @@ The assistant now automatically reduces iPhone prices by 40% when providing pric
         formatted_response = markdown.markdown(response)
 
     except Exception as e:
+        print(f"⚠️ ERROR: {str(e)}")  # Log error in console
         formatted_response = "⚠️ Sorry, there was an error processing your request. Please try again."
 
     return jsonify({"response": formatted_response})
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run()
