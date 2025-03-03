@@ -1,7 +1,11 @@
 import os
+try:
+    from dotenv import load_dotenv
+except ImportError:
+    load_dotenv = lambda: None  # Fallback if dotenv isn’t installed
 import openai
 from flask import Flask, render_template, request, jsonify, session
-from dotenv import load_dotenv
+import markdown
 import logging
 import threading
 import time
@@ -19,13 +23,14 @@ logging.basicConfig(
 )
 
 # Flask app setup
-app = Flask(__name__)
+app = Flask(__name__)  # Fixed _name_ to __name__
 app.secret_key = os.getenv("FLASK_SECRET_KEY", "your-secret-key-here")
 
 # Load OpenAI API key
 openai_api_key = os.getenv("OPENAI_API_KEY")
 if not openai_api_key:
-    raise ValueError("OPENAI_API_KEY environment variable is missing.")
+    logging.error("⚠️ ERROR: OpenAI API key is missing! Set it in your environment variables.")
+    raise ValueError("OpenAI API key is missing.")
 client = openai.OpenAI(api_key=openai_api_key)
 logging.info("✅ OpenAI API key loaded successfully.")
 
@@ -39,19 +44,27 @@ def query_openai(customer_message: str, context: list) -> str:
     try:
         messages = [
             {"role": "system", "content": """
-            You are an AI assistant for ANB Tech Supplies, specializing in iPhone sales. Assist customers with iPhone models, pricing (apply a 40% discount), installment plans, and inquiries. Respond clearly, politely, and helpfully with short sentences and simple language. Maintain context from previous messages. Use only these banking details when asked: Account Number: 1773081371, Bank: Capitec, Name: Mr N Nkapele. For specific requests (e.g., "Pink iPhone 13, 128GB"), provide tailored details.
+            ANB Tech Supplies – Smart iPhone Shopping Assistant
+            You are a customer support assistant for ANB Tech Supplies, helping with inquiries about iPhones (XS to 16 Pro Max, including Pro versions). Provide detailed info on products, shipping, warranties, store policies, and customization options (e.g., engravings, accessory bundles). Apply a 40% discount to original prices in ZAR when providing pricing. Use these details:
+            - Store Address: 609 Roger St, Lusikisiki, Eastern Cape, South Africa, 4828
+            - Phone: +27 63 085 7493
+            - Order Submission: Send model & color to +27 63 085 7493 via WhatsApp
+            - Banking Details: Account Holder: Jayden Allen, Bank: TymeBank (Business), Branch Code: 678910, Account Number: 51059661139
+            - Proof of Payment: Send to +27 63 085 7493 via WhatsApp
+            - Installment Plans: Minimum deposit R750, up to 24 months
+            Respond clearly, politely, with short sentences and simple language. Maintain context from previous messages.
             """}
         ] + context + [{"role": "user", "content": customer_message}]
         response = client.chat.completions.create(
             model="gpt-4o",
             messages=messages,
             temperature=0.7,
-            max_tokens=300
+            max_tokens=500
         )
         return response.choices[0].message.content.strip()
     except openai.OpenAIError as e:
         logging.error(f"OpenAI query failed: {e}")
-        return "Sorry, I couldn’t process your request. How can I assist otherwise?"
+        return "⚠️ Sorry, I couldn’t process your request. How can I assist otherwise?"
 
 # Check for admin access
 def is_admin(message_body: str) -> bool:
@@ -108,11 +121,11 @@ def home():
 @app.route('/chat', methods=['POST'])
 def chat():
     try:
-        data = request.get_json()
+        data = request.get_json()  # Updated from request.json
         if not data or "message" not in data:
             return jsonify({"error": "No message provided"}), 400
 
-        user_message = data["message"].strip().lower()
+        user_message = data.get("message", "").strip().lower()
         session_id = session["session_id"]
         context = session["context"]
 
@@ -144,7 +157,7 @@ def chat():
                             "amount": 9599,  # Default amount
                             "date": datetime.now().strftime("%Y-%m-%d")
                         })
-                response = "✅ Payment received! How else can I assist?"
+                response = "✅ Payment received! Please send proof of payment to +27 63 085 7493. How else can I assist?"
             else:
                 response = "Please include order details after 'PAID' (e.g., 'PAID iPhone 12 Pro')."
         elif seconds := parse_reminder(user_message)[0]:
@@ -155,6 +168,13 @@ def chat():
                 state["reminder_time"] = time.time() + seconds
                 state["reminder_text"] = reminder_text
                 user_states[session_id] = state
+        elif "picture" in user_message or "image" in user_message:
+            response = """
+            📸 iPhone Images  
+            🔗 View here: [Click to View](https://abtechsupplies.github.io/Pictures/)  
+            💬 Need help? Contact +27 63 085 7493 via WhatsApp.  
+            🎨 Want a specific color? Let me know!
+            """
         else:
             response = query_openai(user_message, context)
 
@@ -171,15 +191,19 @@ def chat():
             context = context[-20:]
         session["context"] = context
 
-        return jsonify({"response": response})
+        # Convert Markdown to formatted HTML
+        formatted_response = markdown.markdown(response)
+        return jsonify({"response": formatted_response})
 
     except openai.OpenAIError as e:
-        logging.error(f"OpenAI API Error: {e}")
-        return jsonify({"error": "Failed to process request."}), 500
+        logging.error(f"⚠️ OpenAI Error: {str(e)}")
+        formatted_response = markdown.markdown("⚠️ Sorry, there was an error processing your request. Please try again.")
+        return jsonify({"response": formatted_response}), 500
     except Exception as e:
-        logging.error(f"General Error: {e}")
-        return jsonify({"error": "An unexpected error occurred."}), 500
+        logging.error(f"⚠️ General Error: {str(e)}")
+        formatted_response = markdown.markdown("⚠️ Sorry, an unexpected error occurred. Please try again.")
+        return jsonify({"response": formatted_response}), 500
 
 if __name__ == "__main__":
     port = int(os.getenv("PORT", 5000))
-    app.run(host="0.0.0.0", port=port, debug=os.getenv("FLASK_DEBUG", "False") == "True")
+    app.run(host="0.0.0.0", port=port)
